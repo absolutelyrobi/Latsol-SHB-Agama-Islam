@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulasi SHB Agama Islam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in-up': 'fadeInUp 0.5s ease-out',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+
+  <!-- ================= SCREEN: START ================= -->
+  <div id="screen-start" class="min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="max-w-3xl w-full bg-slate-800 p-8 md:p-12 rounded-2xl shadow-2xl text-center border border-slate-700 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500"></div>
+      
+      <div class="mb-6 flex justify-center">
+        <svg class="w-20 h-20 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+      </div>
+      
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight text-white">
+        Latihan Soal Agama Islam
+      </h1>
+      <h2 class="text-lg md:text-xl text-slate-300 font-semibold mb-6">
+        Materi: Pergaulan Bebas, Larangan Zina & Al-Kulliyat Al-Khamsah
+      </h2>
+      
+      <div class="bg-slate-700/50 rounded-xl p-6 mb-8 text-left max-w-xl mx-auto border border-slate-600">
+        <h3 class="font-bold text-white mb-3">📋 Instruksi Latihan:</h3>
+        <ul class="list-disc pl-5 space-y-2 text-slate-300">
+          <li>Terdiri dari <strong>40 Soal Pilihan Ganda</strong>.</li>
+          <li>Terdapat pembahasan otomatis setelah menjawab setiap soal.</li>
+          <li>Pilih jawaban yang paling tepat dari pilihan A hingga E.</li>
+          <li>Di akhir sesi, kamu akan melihat persentase skor akhirmu.</li>
+        </ul>
+      </div>
+
+      <button onclick="startQuiz()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-10 rounded-full text-lg shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-1">
+        Mulai Latihan Sekarang
+      </button>
+      
+      <p class="mt-8 text-xs text-slate-500">
+        Sumber: Latihan Soal SHB Agama Islam
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN: QUIZ ================= -->
+  <div id="screen-quiz" class="hidden min-h-screen py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+      
+      <!-- Header & Progress -->
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <span id="quiz-category" class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-900/30 px-3 py-1 rounded-full">
+            Kategori
+          </span>
+        </div>
+        <div id="quiz-progress-text" class="text-sm font-semibold text-slate-400">
+          Soal 1 / 40
+        </div>
+      </div>
+      <div class="w-full bg-slate-800 rounded-full h-2 mb-8 overflow-hidden">
+        <div id="quiz-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+      </div>
+
+      <!-- Main Card -->
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl overflow-hidden mb-6">
+        
+        <!-- Stimulus Box (Hidden if empty) -->
+        <div id="stimulus-container" class="bg-slate-700/30 p-5 md:p-8 border-b border-slate-700 text-slate-300 hidden">
+          <div class="flex gap-3 mb-3 items-center">
+            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <h3 class="font-semibold text-white">Teks/Data</h3>
+          </div>
+          <p id="quiz-stimulus" class="whitespace-pre-wrap leading-relaxed text-sm md:text-base"></p>
+        </div>
+
+        <!-- Question Box -->
+        <div class="p-5 md:p-8">
+          <h2 id="quiz-question" class="text-lg md:text-xl font-semibold mb-6 leading-relaxed text-white">
+            Pertanyaan
+          </h2>
+
+          <!-- Options -->
+          <div id="quiz-options" class="space-y-3">
+            <!-- Options will be injected here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback & Next Button -->
+      <div id="quiz-feedback-container" class="hidden animate-fade-in-up">
+        <div id="quiz-feedback-box" class="p-6 rounded-2xl border mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <div id="quiz-feedback-icon"></div>
+            <h3 id="quiz-feedback-title" class="font-bold text-lg"></h3>
+          </div>
+          <div class="pl-10">
+            <p id="quiz-feedback-text" class="opacity-90 leading-relaxed text-sm md:text-base"></p>
+          </div>
+        </div>
+
+        <div class="flex justify-end pb-12">
+          <button onclick="handleNextQuestion()" id="quiz-next-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-8 py-3 rounded-full font-bold shadow-lg flex items-center gap-2 transition">
+            Soal Berikutnya
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SCREEN: RESULT ================= -->
+  <div id="screen-result" class="hidden min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="max-w-2xl w-full bg-slate-800 p-8 md:p-12 rounded-3xl shadow-2xl text-center border border-slate-700">
+      
+      <h2 class="text-3xl font-bold mb-8 text-white">Latihan Selesai! 🎉</h2>
+      
+      <div class="relative w-48 h-48 mx-auto mb-8">
+        <svg class="w-full h-full" viewBox="0 0 36 36">
+          <path class="text-slate-700" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          <path id="result-circle" class="text-emerald-500" stroke-dasharray="0, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span id="result-score" class="text-5xl font-black text-white">0</span>
+          <span class="text-sm text-slate-400 mt-1">Skor Akhir</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-700/30 rounded-xl p-6 mb-8 border border-slate-600">
+        <p class="text-lg">
+          Kamu menjawab benar <strong id="result-correct" class="text-emerald-400 text-xl">0</strong> dari <strong id="result-total" class="text-blue-400 text-xl">40</strong> soal.
+        </p>
+        <p id="result-message" class="mt-3 text-slate-400 italic">
+          Message
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="startQuiz()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-full transition">
+          Ulangi Latihan 🔄
+        </button>
+        <button onclick="goHome()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-8 rounded-full transition">
+          Beranda Utama
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DATA SOAL AGAMA ISLAM (40 SOAL) ---
+    const questionsData = [
+      // ===== PERGAULAN BEBAS (Soal 1–10) =====
+      {
+        id: 1,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Maraknya penggunaan media sosial sering kali membuat remaja terjebak dalam pergaulan yang melampaui batas kewajiban, tuntutan, dan rasa malu. Fenomena ini sering diawali dari hal-hal kecil seperti berduaan di dunia maya hingga berlanjut ke dunia nyata tanpa batasan norma.",
+        question: "Berdasarkan Q.S. Al-Isra'/17: 32, mengapa Allah Swt. menggunakan frasa \"janganlah kamu mendekati zina\" dan bukan sekadar \"jangan berzina\"?",
+        options: [
+          { key: "A", text: "Karena larangan tersebut hanya berlaku untuk perbuatan yang dilakukan di tempat sepi tanpa saksi mata." },
+          { key: "B", text: "Karena mendekati zina mencakup semua perbuatan sarana dan sebab yang mengarah pada perzinaan, termasuk pergaulan bebas." },
+          { key: "C", text: "Karena perbuatan zina baru dianggap berdosa jika pelakunya sudah pernah menikah dan memiliki keturunan." },
+          { key: "D", text: "Karena perbuatan tersebut diharamkan secara mutlak namun batasannya disesuaikan dengan budaya lokal masyarakat setempat yang berlaku." },
+          { key: "E", text: "Karena pergaulan bebas adalah bentuk eksplorasi masa remaja yang wajar selama tidak sampai melakukan perzinaan secara langsung." }
+        ],
+        correct: "B",
+        explanation: "Q.S. Al-Isra'/17: 32 melarang manusia untuk mendekati zina. Makna \"mendekati\" berarti semua perbuatan yang menjadi sarana dan sebab perbuatan zina juga dilarang. Perbuatan mendekati zina ini termasuk dalam kategori pergaulan bebas."
+      },
+      {
+        id: 2,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Seorang pemuda tertangkap tangan sedang mengonsumsi minuman keras di sebuah pesta. Saat ditegur, ia berdalih bahwa imannya masih kuat dan ia hanya meminum sedikit untuk bergaul.",
+        question: "Bagaimana analisis yang tepat terhadap dalih pemuda tersebut berdasarkan H.R. Bukhari tentang larangan pergaulan bebas?",
+        options: [
+          { key: "A", text: "Keimanan seseorang tidak ada hubungannya sama sekali dengan perbuatan fisik di dunia." },
+          { key: "B", text: "Meminum khamar dibolehkan asalkan pelakunya tidak sampai mabuk berat atau hilang kesadaran." },
+          { key: "C", text: "Orang yang meminum khamar saat melakukannya sedang tidak dalam keadaan beriman, karena iman dan maksiat tersebut tidak bersatu." },
+          { key: "D", text: "Minuman keras hanya dilarang jika dibeli dengan harta yang tidak halal atau hasil dari kejahatan pencurian yang merugikan orang lain." },
+          { key: "E", text: "Tindakan pemuda tersebut dapat dibenarkan karena menjaga hubungan sosial." }
+        ],
+        correct: "C",
+        explanation: "Dalam H.R. Bukhari, Rasulullah Saw. bersabda bahwa tidaklah seseorang meminum khamar ketika meminumnya dalam keadaan beriman. Ini berarti saat maksiat itu dilakukan, keimanan sedang tidak bersamanya."
+      },
+      {
+        id: 3,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Remaja X merasa terkekang oleh aturan keluarga sehingga ia sering keluyuran malam, menghamburkan uang untuk bersenang-senang, dan mengabaikan nasihat agama karena merasa berhak atas hidupnya sendiri.",
+        question: "Perilaku Remaja X tersebut paling tepat didefinisikan secara istilah sebagai bentuk penyimpangan apa?",
+        options: [
+          { key: "A", text: "Kenakalan remaja yang wajar sebagai bagian dari proses pencarian jati diri sebelum memasuki fase kedewasaan." },
+          { key: "B", text: "Gangguan psikologis akibat kurangnya perhatian orang tua yang berujung pada depresi sosial." },
+          { key: "C", text: "Perilaku menyimpang yang melanggar norma agama dan norma kesusilaan yang disebut pergaulan bebas." },
+          { key: "D", text: "Kebebasan berekspresi yang dilindungi oleh hak asasi manusia selama tidak melakukan tindak kriminal berat." },
+          { key: "E", text: "Eksplorasi." }
+        ],
+        correct: "C",
+        explanation: "Secara istilah, pergaulan bebas diartikan sebagai perilaku menyimpang yang melanggar norma agama atau norma kesusilaan. Menghamburkan harta dan mengabaikan masa depan adalah ciri-cirinya."
+      },
+      {
+        id: 4,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Perhatikan ciri-ciri perbuatan berikut:\n1) Menghamburkan harta untuk hawa nafsu.\n2) Membantu sesama yang kesulitan.\n3) Pesta hura-hura dengan miras.\n4) Menjaga pandangan dari lawan jenis.\n5) Memperlihatkan aurat antarlawan jenis.",
+        question: "Manakah yang termasuk ciri-ciri pergaulan bebas?",
+        options: [
+          { key: "A", text: "1), 2), dan 3)" },
+          { key: "B", text: "1), 3), dan 5)" },
+          { key: "C", text: "2), 3), dan 4)" },
+          { key: "D", text: "Pernyataan 2), 4), dan 5) yang menunjukkan perilaku menonjol." },
+          { key: "E", text: "Hanya pernyataan 4) dan 5)" }
+        ],
+        correct: "B",
+        explanation: "Ciri pergaulan bebas antara lain menghamburkan harta untuk hawa nafsu (1), pesta miras (3), dan memperlihatkan aurat (5). Membantu sesama (2) dan menjaga pandangan (4) adalah perilaku positif."
+      },
+      {
+        id: 5,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Amir diajak temannya untuk mencoba pil ekstasi dengan alasan agar lebih fokus saat ujian. Amir menolak dengan tegas karena ia paham agama.",
+        question: "Apa alasan syar'i terkuat yang mendasari penolakan Amir?",
+        options: [
+          { key: "A", text: "Karena pil tersebut sangat mahal harganya dan akan menguras uang sakunya." },
+          { key: "B", text: "Karena semua jenis narkoba dan khamar adalah haram dikonsumsi umat Islam, baik sedikit maupun banyak." },
+          { key: "C", text: "Karena ia takut ketahuan oleh pihak sekolah dan mendapat hukuman skorsing dari guru bimbingan konseling." },
+          { key: "D", text: "Karena ekstasi hanya boleh digunakan untuk tujuan pengobatan medis yang diawasi secara ketat oleh dokter spesialis saraf." },
+          { key: "E", text: "Karena ia khawatir." }
+        ],
+        correct: "B",
+        explanation: "Semua jenis narkoba adalah haram bagi umat Islam untuk mengonsumsinya, baik sedikit maupun banyak. Alasan syar'i berpusat pada status hukum haramnya, bukan sekadar alasan sosial atau ekonomi."
+      },
+      {
+        id: 6,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Pak Budi sangat sibuk bekerja sehingga jarang berinteraksi dengan anaknya. Ia membebaskan anaknya bergaul dengan siapa saja tanpa pengawasan. Akibatnya, anaknya terjerumus dalam pergaulan bebas.",
+        question: "Berdasarkan kasus tersebut, apa sebab utama terjadinya pergaulan bebas dari faktor eksternal keluarga?",
+        options: [
+          { key: "A", text: "Anak kurang mendapatkan pemahaman ilmu agama yang mendalam sejak usia dini di sekolah dasar." },
+          { key: "B", text: "Sering berteman dengan orang yang buruk akhlaknya sehingga mudah terpengaruh." },
+          { key: "C", text: "Kurangnya perhatian dan kepedulian orang tua terhadap aktivitas anak sehari-hari." },
+          { key: "D", text: "Ketidakpedulian lingkungan masyarakat sekitar atas terjadinya kemaksiatan yang dibiarkan begitu saja tanpa ada teguran atau sanksi sosial yang tegas." },
+          { key: "E", text: "Tidak memahami akibat." }
+        ],
+        correct: "C",
+        explanation: "Kasus secara spesifik menyoroti Pak Budi yang sibuk dan membebaskan anaknya tanpa pengawasan, yang merupakan bentuk \"kurangnya perhatian dan kepedulian orang tua\"."
+      },
+      {
+        id: 7,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Seseorang yang terjerumus dalam pergaulan bebas pada akhirnya akan merasakan dampak buruk, bukan hanya di akhirat tetapi juga di dunia.",
+        question: "Di bawah ini, manakah yang merupakan akibat pergaulan bebas bagi diri sendiri secara psikologis dan spiritual?",
+        options: [
+          { key: "A", text: "Munculnya permusuhan dan meningkatnya angka kriminalitas di lingkungan tempat tinggalnya." },
+          { key: "B", text: "Malas beribadah, keimanan hampa, dan mental menjadi tidak stabil." },
+          { key: "C", text: "Menyebarnya penyakit menular seksual yang merugikan sistem kesehatan nasional secara keseluruhan." },
+          { key: "D", text: "Hubungan orang tua dan anggota keluarga menjadi renggang karena anak telah mengecewakan harapan keluarga." },
+          { key: "E", text: "Gagal investasi." }
+        ],
+        correct: "B",
+        explanation: "Akibat bagi diri sendiri termasuk malas beribadah, keimanan hampa, dan mental tidak stabil. Pilihan A dan C adalah dampak masyarakat, pilihan D adalah dampak keluarga."
+      },
+      {
+        id: 8,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Untuk menyelamatkan generasi muda dari pergaulan bebas, masyarakat dan keluarga harus saling bekerja sama.",
+        question: "Manakah langkah preventif (pencegahan) paling mendasar yang harus dilakukan oleh individu untuk membentengi dirinya?",
+        options: [
+          { key: "A", text: "Meminta pemerintah daerah untuk segera menutup semua tempat hiburan malam." },
+          { key: "B", text: "Meningkatkan iman dengan pendidikan agama Islam yang memadai." },
+          { key: "C", text: "Memberikan sanksi hukum yang sangat berat berupa kurungan penjara puluhan tahun bagi setiap pelaku agar jera." },
+          { key: "D", text: "Melakukan razia rutin setiap akhir pekan di tempat-tempat yang sering dijadikan lokasi berkumpulnya para remaja." },
+          { key: "E", text: "Menyalahkan lingkungan." }
+        ],
+        correct: "B",
+        explanation: "Cara mengatasi dari dalam diri sendiri yang paling utama adalah meningkatkan iman dengan pendidikan agama. Opsi lain bersifat reaktif/hukuman atau tugas aparat."
+      },
+      {
+        id: 9,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Remaja yang berhasil menjauhi pergaulan bebas akan mendapatkan ketenangan batin dan masa depan yang lebih cerah.",
+        question: "Selain terhindar dari penyakit dan kerusakan moral, apa hikmah spiritual tertinggi yang diperoleh seorang muslim yang menjauhi pergaulan bebas?",
+        options: [
+          { key: "A", text: "Menjadi remaja yang paling populer dan dihormati oleh teman-teman di sekolah." },
+          { key: "B", text: "Mendapatkan pujian dari guru-guru karena selalu patuh pada aturan sekolah tanpa pernah melanggar tata tertib." },
+          { key: "C", text: "Dapat memperoleh rida Allah Swt. dan pahala dari-Nya." },
+          { key: "D", text: "Memiliki banyak waktu luang untuk bermain game online dan menyalurkan hobi lainnya bersama komunitas." },
+          { key: "E", text: "Mendapatkan hadiah." }
+        ],
+        correct: "C",
+        explanation: "Hikmah menjauhi pergaulan bebas antara lain memperoleh rida dan pahala dari Allah Swt. Ini adalah pencapaian spiritual tertinggi."
+      },
+      {
+        id: 10,
+        category: "Agama Islam – Pergaulan Bebas",
+        stimulus: "Ketika dihadapkan pada ajakan teman untuk melakukan perbuatan yang mengarah pada kemaksiatan, seorang pelajar muslim menolak dengan santun.",
+        question: "Konsep apa yang diterapkan oleh pelajar tersebut berdasarkan pemahaman ilmu agamanya?",
+        options: [
+          { key: "A", text: "Sikap antisosial karena ia tidak mau membaur dengan kebiasaan teman-teman sebayanya di lingkungan tersebut." },
+          { key: "B", text: "Kontrol diri dari perbuatan yang mengarah pada kemaksiatan karena memiliki pemahaman agama." },
+          { key: "C", text: "Rasa sombong karena merasa dirinya jauh lebih suci dan lebih baik dibandingkan teman-temannya yang lain." },
+          { key: "D", text: "Ketakutan akan hukuman dari guru apabila perbuatannya tersebar dan viral di media sosial." },
+          { key: "E", text: "Sikap egois." }
+        ],
+        correct: "B",
+        explanation: "Dengan ilmu agama, remaja dapat mengontrol diri dari perbuatan yang mengarah pada kemaksiatan dalam pergaulan."
+      },
+      // ===== LARANGAN ZINA (Soal 11–20) =====
+      {
+        id: 11,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Al-Qur'an mengatur hukuman bagi pelaku zina dengan sangat tegas agar menjadi pelajaran bagi masyarakat.",
+        question: "Dalam Q.S. An-Nur/24: 2, apa instruksi spesifik Allah Swt. kepada pihak yang berwenang mengeksekusi hukuman bagi pezina, terkait dengan perasaan emosional mereka?",
+        options: [
+          { key: "A", text: "Hakim harus mempertimbangkan latar belakang ekonomi pelaku sebelum memberikan hukuman fisik." },
+          { key: "B", text: "Janganlah rasa belas kasihan mencegah kamu untuk melaksanakan agama (hukum) Allah." },
+          { key: "C", text: "Hukuman boleh dikurangi apabila pelaku benar-benar menangis, menyesali perbuatannya, dan berjanji tidak akan mengulanginya lagi di masa depan." },
+          { key: "D", text: "Pelaksanaan hukuman harus ditutupi dari pandangan publik demi menjaga hak asasi dan nama baik keluarga pelaku zina." },
+          { key: "E", text: "Hakim wajib." }
+        ],
+        correct: "B",
+        explanation: "Q.S. An-Nur/24: 2 secara eksplisit menyatakan \"janganlah rasa belas kasihan kepada keduanya mencegah kamu untuk (melaksanakan) agama (hukum) Allah\". Hakim dilarang membatalkan atau mengurangi hukuman karena belas kasihan."
+      },
+      {
+        id: 12,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Syariat Islam membedakan jenis hukuman zina berdasarkan status pernikahan pelakunya.",
+        question: "Berdasarkan H.R. Muslim dari 'Ubadah bin Shamit, bagaimana ketentuan hukuman bagi pezina gairu muhshan (belum menikah)?",
+        options: [
+          { key: "A", text: "Dicambuk sebanyak lima puluh kali dan dipenjara seumur hidup." },
+          { key: "B", text: "Dirajam sampai mati dengan disaksikan oleh sekumpulan umat Islam minimal empat orang yang adil." },
+          { key: "C", text: "Dicambuk seratus kali dan diasingkan selama setahun." },
+          { key: "D", text: "Diwajibkan membayar denda yang sangat besar kepada kas negara untuk pembangunan fasilitas umum." },
+          { key: "E", text: "Diberi peringatan." }
+        ],
+        correct: "C",
+        explanation: "Pelaku zina yang belum menikah (gairu muhshan) hukumannya adalah cambuk seratus kali dan diasingkan selama setahun."
+      },
+      {
+        id: 13,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Berzina adalah perbuatan keji yang merusak tatanan sosial masyarakat.",
+        question: "Secara istilah fiqih, apa definisi yang paling tepat untuk zina?",
+        options: [
+          { key: "A", text: "Berduaan antara laki-laki dan perempuan di tempat sepi yang memancing fitnah." },
+          { key: "B", text: "Hubungan antara laki-laki dan perempuan di luar catatan pernikahan yang sah." },
+          { key: "C", text: "Melihat tayangan pornografi secara sengaja yang memicu munculnya hawa nafsu tak terkendali." },
+          { key: "D", text: "Menikah dengan niat untuk bercerai dalam waktu singkat hanya demi kesenangan duniawi semata." },
+          { key: "E", text: "Bersentuhan fisik." }
+        ],
+        correct: "B",
+        explanation: "Zina didefinisikan secara istilah sebagai hubungan antara laki-laki dan perempuan di luar catatan pernikahan yang sah."
+      },
+      {
+        id: 14,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Di suatu wilayah yang menerapkan syariat Islam, seorang pria yang sudah beristri terbukti melakukan zina secara sah melalui saksi.",
+        question: "Sanksi apa yang seharusnya dijatuhkan kepadanya menurut hukum Islam (zina muhshan)?",
+        options: [
+          { key: "A", text: "Didera 100 kali dan diasingkan dari kampung halamannya." },
+          { key: "B", text: "Diminta bertaubat nasuha tanpa dijatuhi hukuman fisik sama sekali." },
+          { key: "C", text: "Dirajam sampai mati, yaitu ditanam setengah badan lalu dilempari batu." },
+          { key: "D", text: "Diceraikan paksa dari istrinya dan dilarang menikah lagi seumur hidupnya dengan siapapun." },
+          { key: "E", text: "Dibayar denda." }
+        ],
+        correct: "C",
+        explanation: "Zina muhshan (pelaku sudah pernah menikah) hukumannya adalah dirajam sampai mati. Bentuk hukuman rajam adalah ditanam setengah badan dan dilempari batu."
+      },
+      {
+        id: 15,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Syarat pelaksanaan hukuman zina sangat ketat untuk menghindari fitnah.",
+        question: "Berapa jumlah saksi sah yang disyaratkan agar hukuman zina dapat dilaksanakan jika pelaku tidak mengaku?",
+        options: [
+          { key: "A", text: "Dua orang laki-laki dewasa yang adil." },
+          { key: "B", text: "Tiga orang saksi dari keluarga terdekat." },
+          { key: "C", text: "Empat orang secara sah." },
+          { key: "D", text: "Minimal lima orang saksi mata yang melihat kejadian dari kejauhan namun sangat meyakinkan." },
+          { key: "E", text: "Satu saksi kuat." }
+        ],
+        correct: "C",
+        explanation: "Hukuman bagi pelaku zina dilaksanakan jika memenuhi saksi sejumlah empat orang secara sah."
+      },
+      {
+        id: 16,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Salah satu dampak buruk perzinaan yang sangat fatal berkaitan dengan garis keturunan.",
+        question: "Apa akibat hukum bagi nasab (garis keturunan) anak yang lahir dari hasil perzinaan?",
+        options: [
+          { key: "A", text: "Anak tersebut tetap disandarkan nasabnya kepada ayah biologisnya jika sang ayah mengakui secara lisan." },
+          { key: "B", text: "Anak zina diangkat menjadi tanggung jawab panti asuhan sepenuhnya." },
+          { key: "C", text: "Mengaburkan hubungan nasab sehingga keturunan menjadi tidak jelas dan anak tidak dapat memperoleh warisan." },
+          { key: "D", text: "Anak tersebut kehilangan seluruh hak kewarganegaraannya dan tidak diakui oleh negara tempat ia dilahirkan." },
+          { key: "E", text: "Diberi sanksi." }
+        ],
+        correct: "C",
+        explanation: "Perzinaan akan mengaburkan hubungan nasab kepada ayah yang sebenarnya. Nasab menjadi tidak jelas sehingga anak zina tidak dapat memperoleh warisan."
+      },
+      {
+        id: 17,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Zina tidak hanya merusak spiritual, tetapi juga mendorong perbuatan kriminal lainnya.",
+        question: "Tindakan kriminal apa yang sering kali dipicu oleh rasa malu akibat kehamilan di luar nikah hasil perzinaan?",
+        options: [
+          { key: "A", text: "Melakukan pencurian untuk membiayai persalinan di rumah sakit." },
+          { key: "B", text: "Menggugurkan kandungan atau membunuh perempuan yang telah hamil." },
+          { key: "C", text: "Memalsukan dokumen negara untuk membuat akta kelahiran anak agar terlihat memiliki identitas ayah yang sah." },
+          { key: "D", text: "Berbohong kepada tokoh masyarakat setempat mengenai status pernikahannya untuk menghindari sanksi sosial." },
+          { key: "E", text: "Melarikan diri." }
+        ],
+        correct: "B",
+        explanation: "Perzinaan mendorong dosa besar lain seperti menggugurkan kandungan, membunuh perempuan yang hamil karena perzinaan, atau bunuh diri."
+      },
+      {
+        id: 18,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Berpuasa sunah, seperti Senin-Kamis, diajarkan sebagai salah satu terapi rohani bagi remaja.",
+        question: "Bagaimana korelasi antara berpuasa dengan cara menghindari perbuatan zina?",
+        options: [
+          { key: "A", text: "Puasa membuat tubuh menjadi lemas sehingga tidak sanggup bepergian jauh keluar rumah." },
+          { key: "B", text: "Berpuasa dapat mendatangkan pujian dari orang tua sehingga anak merasa bangga." },
+          { key: "C", text: "Dengan berpuasa, kita dapat mengendalikan hawa nafsu dalam diri kita." },
+          { key: "D", text: "Puasa adalah syarat mutlak yang harus dilakukan sebelum seseorang memutuskan untuk melangsungkan pernikahan siri." },
+          { key: "E", text: "Menjaga diet." }
+        ],
+        correct: "C",
+        explanation: "Rasulullah mengajarkan bahwa bagi pemuda yang tidak mampu menikah, hendaklah berpuasa karena hal itu dapat menekan hawa nafsunya, sehingga dapat mengendalikan hawa nafsu."
+      },
+      {
+        id: 19,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Dalam H.R. Abu Daud, dijelaskan mengenai status iman seseorang ketika sedang berzina.",
+        question: "Analogi apa yang digunakan Rasulullah Saw. untuk menggambarkan keimanan orang yang sedang berzina?",
+        options: [
+          { key: "A", text: "Seperti debu yang diterbangkan oleh angin topan." },
+          { key: "B", text: "Seperti cahaya lampu yang dipadamkan di tengah malam gelap." },
+          { key: "C", text: "Keimanan keluar seperti perginya awan, dan kembali setelah ia selesai." },
+          { key: "D", text: "Bagaikan pohon kering yang akarnya dicabut dari dalam tanah yang sangat gersang tanpa setetes air pun." },
+          { key: "E", text: "Laksana uap air." }
+        ],
+        correct: "C",
+        explanation: "Dalam hadis riwayat Abu Daud, keimanan orang yang berzina keluar seperti perginya awan (seperti naungan), dan jika telah selesai maka keimanan tersebut kembali kepadanya."
+      },
+      {
+        id: 20,
+        category: "Agama Islam – Larangan Zina",
+        stimulus: "Umat Islam yang mampu menjauhkan diri dari perbuatan zina akan terbebas dari kehinaan di dunia dan akhirat.",
+        question: "Manakah dari berikut ini yang merupakan hikmah sosial kemasyarakatan dari menjauhi zina?",
+        options: [
+          { key: "A", text: "Kelak akan mendapat syafaat dari Rasulullah Saw. di hari kiamat." },
+          { key: "B", text: "Dapat menjaga kesucian, martabat diri, dan keluarganya di tengah masyarakat." },
+          { key: "C", text: "Akan diangkat menjadi pemimpin wilayah atau tokoh agama karena dianggap suci dan tidak pernah melakukan dosa besar." },
+          { key: "D", text: "Secara otomatis akan dilancarkan rezekinya tanpa perlu bekerja keras membanting tulang mencari nafkah." },
+          { key: "E", text: "Mendapat pahala." }
+        ],
+        correct: "B",
+        explanation: "Hikmah kemasyarakatan/sosial dari menjauhi zina adalah dapat menjaga kesucian, martabat diri, dan keluarganya. Opsi A adalah hikmah ukhrawi."
+      },
+      // ===== AL-KULLIYAT AL-KHAMSAH (Soal 21–40) =====
+      {
+        id: 21,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Konsep Maqasid Asy-Syari'ah dikemukakan oleh Imam Asy-Syatibi untuk menyelesaikan permasalahan muamalah yang terus berkembang.",
+        question: "Apa tujuan utama dari syariat Islam (Maqasid Asy-Syari'ah) terkait penciptaan aturan-aturan hukum tersebut?",
+        options: [
+          { key: "A", text: "Untuk memastikan semua manusia masuk Islam secara paksa tanpa terkecuali." },
+          { key: "B", text: "Untuk membatasi kebebasan manusia dalam mengelola sumber daya alam secara eksploitatif." },
+          { key: "C", text: "Mewujudkan kemaslahatan bagi kehidupan manusia, baik di dunia maupun di akhirat." },
+          { key: "D", text: "Menciptakan sistem peradilan yang sangat kaku dan tidak bisa diubah selamanya menyesuaikan dengan pergeseran zaman dan budaya." },
+          { key: "E", text: "Mencegah kemajuan." }
+        ],
+        correct: "C",
+        explanation: "Maqasid Asy-Syari'ah artinya syariat bertujuan untuk mewujudkan kemaslahatan bagi kehidupan manusia, baik di dunia maupun di akhirat."
+      },
+      {
+        id: 22,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Menjaga agama (Hifz Ad-Din) merupakan prioritas tertinggi dalam Al-Kulliyat Al-Khamsah.",
+        question: "Berdasarkan Q.S. Al-Baqarah/2: 217, apa ancaman bagi seseorang yang murtad (keluar dari Islam) dan mati dalam kekafiran?",
+        options: [
+          { key: "A", text: "Hanya akan dikucilkan oleh masyarakat tempat ia tinggal seumur hidupnya." },
+          { key: "B", text: "Sia-sialah amal mereka di dunia dan akhirat, dan mereka kekal di dalam neraka." },
+          { key: "C", text: "Semua hartanya akan disita oleh negara bagian dan tidak berhak mendapatkan bantuan sosial apapun dari pemerintah." },
+          { key: "D", text: "Harus membayar denda dalam jumlah besar sebelum dimakamkan." },
+          { key: "E", text: "Hilang warisannya." }
+        ],
+        correct: "B",
+        explanation: "Q.S. Al-Baqarah/2: 217 menegaskan bahwa orang yang murtad lalu mati dalam kekafiran, amal mereka sia-sia di dunia dan akhirat, dan mereka kekal di neraka."
+      },
+      {
+        id: 23,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Di sekolah, Rina selalu berusaha menjaga toleransi dengan teman-temannya yang berbeda keyakinan tanpa mengorbankan akidahnya sendiri.",
+        question: "Tindakan Rina tersebut mencerminkan penerapan Hifz Ad-Din dalam bentuk...",
+        options: [
+          { key: "A", text: "Mempertahankan agama Islam dengan cara berperang melawan musuh di medan pertempuran." },
+          { key: "B", text: "Menegakkan salat lima waktu sebagai tiang agama di awal waktu." },
+          { key: "C", text: "Menjaga hubungan antarsesama manusia dengan menghormati orang yang berbeda agama." },
+          { key: "D", text: "Mendakwahkan ajaran Islam secara paksa agar temannya segera membaca syahadat dan berpindah keyakinan." },
+          { key: "E", text: "Menjauhi larangan." }
+        ],
+        correct: "C",
+        explanation: "Menjaga agama (Hifz Ad-Din) mencakup menjaga hubungan antarsesama manusia, di antaranya menghargai dan menghormati orang yang memiliki agama dan kepercayaan lain."
+      },
+      {
+        id: 24,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Salah satu manfaat menjaga agama adalah agama Islam menjadi pedoman hidup manusia hingga akhir zaman.",
+        question: "Bagaimana peran dakwah (seperti dakwah bil lisan, bil kitābah, dan bil hāl) dalam mencapai manfaat tersebut?",
+        options: [
+          { key: "A", text: "Memperkaya para juru dakwah dengan harta benda yang berlimpah dari para donatur di berbagai daerah kekuasaan Islam." },
+          { key: "B", text: "Memelihara nilai-nilai ajaran Islam agar tetap lestari di tengah masyarakat." },
+          { key: "C", text: "Menghancurkan kebudayaan lokal yang sudah ada sejak ratusan tahun lalu tanpa pandang bulu untuk digantikan dengan budaya asing yang baru." },
+          { key: "D", text: "Membuat aturan-aturan baru yang tidak ada dalam Al-Qur'an dan hadis." },
+          { key: "E", text: "Menarik perhatian." }
+        ],
+        correct: "B",
+        explanation: "Dakwah Islam menjadi faktor penting dalam memelihara nilai-nilai ajaran Islam agar tetap lestari."
+      },
+      {
+        id: 25,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Pelajar Islam diwajibkan mengambil andil dalam Hifz Ad-Din.",
+        question: "Contoh implementasi Hifz Ad-Din yang paling konkret bagi seorang pelajar di sekolah adalah...",
+        options: [
+          { key: "A", text: "Sering membolos saat jam pelajaran berlangsung karena merasa ilmu agama sudah cukup didapatkan di pondok pesantren asalnya." },
+          { key: "B", text: "Melakukan unjuk rasa anarkis menentang kebijakan kepala sekolah." },
+          { key: "C", text: "Menjadi pelajar yang taat tata tertib, belajar sungguh-sungguh, dan menjadikan ilmunya untuk dakwah." },
+          { key: "D", text: "Memaksa seluruh siswa di sekolah untuk menggunakan atribut agama tertentu meskipun melanggar kesepakatan komite sekolah." },
+          { key: "E", text: "Mencari nilai." }
+        ],
+        correct: "C",
+        explanation: "Bagi pelajar, Hifz Ad-Din dilakukan dengan menjadi pelajar terbaik, taat tata tertib, belajar sungguh-sungguh, dan menjadikan ilmu sebagai media dakwah."
+      },
+      {
+        id: 26,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Hifz An-Nafs mengajarkan pentingnya melindungi jiwa, bahkan dalam kondisi darurat.",
+        question: "Jika seseorang tersesat di hutan dan hampir mati kelaparan, syariat Islam memperbolehkan memakan bangkai dengan syarat tertentu. Apa prinsip dasar dari kebolehan ini?",
+        options: [
+          { key: "A", text: "Karena bangkai binatang di hutan lebih suci dibandingkan bangkai di kota." },
+          { key: "B", text: "Hanya sekadar untuk bertahan hidup, bukan karena menginginkannya dan tidak melampaui batas." },
+          { key: "C", text: "Demi menguji kekuatan imun tubuh manusia saat berhadapan dengan bakteri berbahaya di alam liar yang terisolasi dari dunia luar." },
+          { key: "D", text: "Kebolehan tersebut berlaku selamanya asalkan orang tersebut menyukainya." },
+          { key: "E", text: "Syaratnya dibakar." }
+        ],
+        correct: "B",
+        explanation: "Dalam kondisi darurat untuk mempertahankan jiwa, diperbolehkan makan yang haram sekadar untuk bertahan hidup, tidak melampaui batas (Q.S. Al-Baqarah/2: 173)."
+      },
+      {
+        id: 27,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Islam melarang keras pembunuhan karena nyawa manusia sangat berharga.",
+        question: "Berdasarkan Q.S. Al-Ma'idah/5: 32, bagaimana perumpamaan pahala bagi seseorang yang memelihara kehidupan satu manusia?",
+        options: [
+          { key: "A", text: "Seakan-akan dia telah memelihara kehidupan semua manusia." },
+          { key: "B", text: "Seperti membangun seribu masjid di tanah suci yang selalu dipenuhi jemaah." },
+          { key: "C", text: "Menyamai pahala ibadah haji mabrur yang dilakukan secara berturut-turut selama sepuluh tahun tanpa henti dengan harta halal." },
+          { key: "D", text: "Mendapat jaminan perlindungan dari malaikat saat di alam barzakh." },
+          { key: "E", text: "Menghapus dosa." }
+        ],
+        correct: "A",
+        explanation: "Q.S. Al-Ma'idah/5: 32 menyatakan bahwa \"siapa yang memelihara kehidupan seorang manusia, dia seakan-akan telah memelihara kehidupan semua manusia\"."
+      },
+      {
+        id: 28,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Hukuman kisas diberlakukan dalam Islam bagi orang yang menghilangkan nyawa atau melukai fisik orang lain dengan sengaja.",
+        question: "Selain sebagai balasan (mata dengan mata, luka dengan luka), apa hikmah utama dari penerapan kisas berdasarkan Q.S. Al-Baqarah/2: 179?",
+        options: [
+          { key: "A", text: "Agar keluarga korban bisa meluapkan amarah balas dendamnya." },
+          { key: "B", text: "Untuk menakut-nakuti negara lain agar tidak berani menyerang umat Islam." },
+          { key: "C", text: "Dalam kisas itu ada (jaminan) kehidupan bagimu, wahai orang-orang yang berakal agar kamu bertakwa." },
+          { key: "D", text: "Menekan jumlah populasi penduduk yang terus meningkat secara tidak terkendali di kawasan berpenduduk padat." },
+          { key: "E", text: "Menghemat biaya." }
+        ],
+        correct: "C",
+        explanation: "Q.S. Al-Baqarah/2: 179 secara eksplisit menyebutkan \"Dalam kisas itu ada (jaminan) kehidupan bagimu... agar kamu bertakwa\"."
+      },
+      {
+        id: 29,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Pelaksanaan Hifz An-Nafs tidak melulu soal nyawa, tetapi juga kesehatan jasmani dan rohani.",
+        question: "Di lingkungan sekolah, bagaimana wujud nyata menjaga jiwa (Hifz An-Nafs) yang dapat dilakukan siswa?",
+        options: [
+          { key: "A", text: "Menghukum teman yang bersalah dengan memukulnya agar disiplin." },
+          { key: "B", text: "Mengonsumsi segala jenis jajanan tanpa melihat kebersihan dan kehalalannya asalkan rasanya sangat lezat." },
+          { key: "C", text: "Mengamalkan adab berteman, tidak memicu perkelahian atau tawuran yang membahayakan keselamatan." },
+          { key: "D", text: "Hanya bergaul dengan teman yang seagama dan satu suku saja untuk meminimalisasi konflik internal di dalam ruang kelas." },
+          { key: "E", text: "Mengisolasi diri." }
+        ],
+        correct: "C",
+        explanation: "Bagi pelajar, menjaga jiwa diterapkan dengan mengamalkan adab berteman, tidak membuat masalah yang menimbulkan perkelahian/tawuran."
+      },
+      {
+        id: 30,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Allah Swt. menganugerahkan akal agar manusia dapat membedakan yang baik dan buruk (Hifz Al-'Aql).",
+        question: "Mutiara hikmah menyatakan \"Akal yang sehat berasal dari jiwa yang sehat\". Apa implikasi pernyataan ini terhadap asupan yang masuk ke tubuh?",
+        options: [
+          { key: "A", text: "Boleh meminum miras sedikit jika jiwa sedang stres berat." },
+          { key: "B", text: "Makanan dan minuman yang dikonsumsi wajib yang halal dan baik untuk melindungi fungsi akal." },
+          { key: "C", text: "Akal hanya dipengaruhi oleh seberapa banyak buku teks yang dibaca setiap hari di perpustakaan sekolah." },
+          { key: "D", text: "Tidak ada hubungannya antara makanan fisik dengan kecerdasan spiritual karena keduanya berada pada dimensi yang sama sekali berbeda." },
+          { key: "E", text: "Harus makan banyak." }
+        ],
+        correct: "B",
+        explanation: "Menjaga akal dilakukan dengan asupan makanan/minuman yang halal dan baik (halalan thayyiban), karena akal sehat dipengaruhi fisik/jiwa sehat."
+      },
+      {
+        id: 31,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Dalam Q.S. Ali 'Imran/3: 7 disebutkan ciri ululalbab (orang berakal).",
+        question: "Bagaimana sikap ululalbab ketika dihadapkan pada ayat-ayat Al-Qur'an yang sifatnya mutasyabihat (samar/butuh penafsiran mendalam)?",
+        options: [
+          { key: "A", text: "Berusaha mencari takwilnya demi memunculkan fitnah dan kekacauan." },
+          { key: "B", text: "Menyatakan bahwa ayat tersebut tidak relevan lagi untuk zaman modern." },
+          { key: "C", text: "Mengimaninya dengan menyatakan \"Kami beriman kepadanya (Al-Qur'an), semuanya dari Tuhan kami\"." },
+          { key: "D", text: "Menyimpulkan makna ayat tersebut sesuai hawa nafsu pribadi tanpa mengindahkan kaidah ilmu tafsir yang disepakati mayoritas ulama yang otoritatif." },
+          { key: "E", text: "Mengabaikan ayat." }
+        ],
+        correct: "C",
+        explanation: "Orang yang ilmunya mendalam (berakal) saat menghadapi ayat mutasyabihat akan berkata, \"Kami beriman kepadanya, semuanya dari Tuhan kami\"."
+      },
+      {
+        id: 32,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Narkoba dan khamar secara langsung merusak fungsi neuron otak manusia.",
+        question: "Mengapa Islam memosisikan pencegahan narkoba dan khamar sebagai bagian dari perlindungan esensial (Hifz Al-'Aql)?",
+        options: [
+          { key: "A", text: "Karena harga kedua barang tersebut mahal dan merusak tatanan ekonomi makro negara." },
+          { key: "B", text: "Karena perbuatan tersebut dapat melemahkan dan merusak fungsi akal, serta memicu khayalan kotor." },
+          { key: "C", text: "Agar umat Islam secara eksklusif terlihat lebih sopan di mata peradaban bangsa barat sekuler." },
+          { key: "D", text: "Karena bahan baku pembuatannya menggunakan hewan-hewan yang diharamkan dalam syariat Islam, seperti babi atau anjing hutan liar yang berpenyakit." },
+          { key: "E", text: "Karena memabukkan." }
+        ],
+        correct: "B",
+        explanation: "Khamar dan narkoba merusak akal karena melemahkan fungsinya, membuat akal berkhayal kotor, dan tidak logis."
+      },
+      {
+        id: 33,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Sebagai wujud implementasi menjaga akal (Hifz Al-'Aql), pelajar tidak cukup hanya menjauhi narkoba.",
+        question: "Tindakan proaktif apa yang wajib dilakukan siswa agar akalnya berfungsi optimal sesuai ajaran Islam?",
+        options: [
+          { key: "A", text: "Membaca buku fiksi sepanjang waktu tanpa henti di kelas." },
+          { key: "B", text: "Berdebat keras tentang masalah agama meskipun tidak memiliki ilmu." },
+          { key: "C", text: "Belajar dengan giat, membaca Al-Qur'an, dan bertafakur terhadap ciptaan Allah Swt." },
+          { key: "D", text: "Menghindari semua kegiatan ekstrakurikuler fisik karena olahraga dikhawatirkan dapat membahayakan otak jika terjadi benturan keras." },
+          { key: "E", text: "Mengonsumsi vitamin." }
+        ],
+        correct: "C",
+        explanation: "Pelaksanaan proaktif Hifz Al-'Aql bagi pelajar antara lain belajar giat, baca Al-Qur'an, baca buku, berpikir positif, dan bertafakur terhadap ciptaan Allah."
+      },
+      {
+        id: 34,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Hifz An-Nasl bertujuan menjaga garis keturunan agar lahir generasi yang bermartabat.",
+        question: "Menurut pandangan syariat Islam, langkah valid pertama yang harus dipenuhi untuk menjaga keturunan adalah...",
+        options: [
+          { key: "A", text: "Melakukan pemeriksaan genetik lengkap di fasilitas kesehatan." },
+          { key: "B", text: "Mendidik anak agar bisa berbicara dalam bahasa asing yang fasih." },
+          { key: "C", text: "Memastikan keturunan tersebut berasal dari ikatan pernikahan yang sah." },
+          { key: "D", text: "Menyiapkan tabungan pendidikan yang cukup besar hingga anak tersebut bisa menyelesaikan kuliah program doktor di universitas ternama luar negeri." },
+          { key: "E", text: "Membeli rumah mewah." }
+        ],
+        correct: "C",
+        explanation: "Untuk menjaga keturunan, yang pertama kali harus dipastikan adalah keturunan itu berasal dari pernikahan yang sah, karena akan berdampak pada keutuhan nasab."
+      },
+      {
+        id: 35,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Menikah adalah solusi syar'i untuk menghindari perzinaan.",
+        question: "Bagaimana janji Allah Swt. dalam Q.S. An-Nur/24: 32 kepada orang yang layak menikah namun khawatir secara ekonomi (miskin)?",
+        options: [
+          { key: "A", text: "Allah akan langsung memberikan harta berupa uang tunai kepada keluarga pihak perempuan." },
+          { key: "B", text: "Pernikahan mereka otomatis dibatalkan secara agama jika tidak mampu memberikan mahar." },
+          { key: "C", text: "Allah akan memberi kemampuan (kecukupan) kepada mereka dengan karunia-Nya." },
+          { key: "D", text: "Mereka diwajibkan untuk berpuasa seumur hidup hingga terkumpul harta yang setara dengan harga emas batangan seratus gram di pasaran lokal setempat." },
+          { key: "E", text: "Harus mencari pinjaman." }
+        ],
+        correct: "C",
+        explanation: "Q.S. An-Nur/24: 32 berbunyi: \"Jika mereka miskin, Allah akan memberi kemampuan kepada mereka dengan karunia-Nya\"."
+      },
+      {
+        id: 36,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Menjaga keturunan tidak berhenti pada proses kelahiran anak saja.",
+        question: "Berdasarkan firman Allah dalam Q.S. At-Tahrim/66: 6, apa kewajiban orang tua terhadap keluarganya?",
+        options: [
+          { key: "A", text: "Membebaskan anak mencari kebenaran agama sendiri." },
+          { key: "B", text: "Mengumpulkan harta sebanyak-banyaknya sebagai warisan masa depan." },
+          { key: "C", text: "Menjaga diri sendiri dan keluarga dari ancaman api neraka." },
+          { key: "D", text: "Menghukum anak secara fisik jika mereka gagal meraih prestasi akademik yang memuaskan di tingkat sekolah menengah atas bertaraf internasional." },
+          { key: "E", text: "Menyerahkan pengasuhan." }
+        ],
+        correct: "C",
+        explanation: "Q.S. At-Tahrim/66: 6 berbunyi: \"Wahai orang-orang yang beriman, jagalah dirimu dan keluargamu dari api neraka\". Melindungi keluarga secara spiritual adalah tugas orang tua."
+      },
+      {
+        id: 37,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Pelajar juga memiliki peran dalam Hifz An-Nasl meski belum menikah.",
+        question: "Contoh sikap yang tepat bagi pelajar dalam rangka menjaga keturunan keluarga orang lain adalah...",
+        options: [
+          { key: "A", text: "Menjodoh-jodohkan temannya di usia dini." },
+          { key: "B", text: "Berpacaran secara sembunyi-sembunyi agar terhindar dari fitnah luar." },
+          { key: "C", text: "Menjaga pergaulan dengan akhlak mulia dan tidak menghina nama orang tua teman." },
+          { key: "D", text: "Mencampuri urusan rumah tangga teman dengan cara memarahi orang tua teman tersebut secara langsung tanpa melalui bimbingan dari guru wali kelas." },
+          { key: "E", text: "Mengumpulkan aib keluarga." }
+        ],
+        correct: "C",
+        explanation: "Pelaksanaan menjaga keturunan di sekolah dilakukan dengan menjaga pergaulan, berakhlak mulia, dan tidak menghina nama orang tua atau anggota keluarga teman."
+      },
+      {
+        id: 38,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Menjaga harta (Hifz Al-Mal) bukan berarti menumpuk kekayaan tanpa batas.",
+        question: "Berdasarkan Q.S. Al-Baqarah/2: 275, praktik ekonomi apa yang secara tegas diharamkan dalam memperoleh harta?",
+        options: [
+          { key: "A", text: "Melakukan jual beli antar negara." },
+          { key: "B", text: "Sistem bagi hasil investasi (mudharabah)." },
+          { key: "C", text: "Praktik riba yang memberatkan dan memeras pihak yang berutang." },
+          { key: "D", text: "Memperjualbelikan komoditas hasil panen pertanian yang mengalami fluktuasi harga sangat ekstrem di pasar bebas internasional tanpa intervensi pemerintah." },
+          { key: "E", text: "Berdagang di pinggir jalan." }
+        ],
+        correct: "C",
+        explanation: "Q.S. Al-Baqarah/2: 275 menyatakan \"Allah telah menghalalkan jual beli dan mengharamkan riba\". Harta harus dicari dari jalan yang halal."
+      },
+      {
+        id: 39,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Umat Islam dilarang bertindak konsumtif atau menghamburkan harta untuk foya-foya.",
+        question: "Dalam Q.S. Al-Isra'/17: 27, orang-orang yang pemboros (mubazir) diibaratkan sebagai...",
+        options: [
+          { key: "A", text: "Umat yang paling jauh dari rahmat Allah." },
+          { key: "B", text: "Orang-orang yang miskin iman dan akal." },
+          { key: "C", text: "Saudara-saudara setan karena sifat boros merupakan perbuatan setan." },
+          { key: "D", text: "Para pendosa yang harus diasingkan dari lingkungan masyarakat muslim yang taat beribadah karena perilaku mereka dapat menularkan keburukan masif." },
+          { key: "E", text: "Orang-orang bodoh." }
+        ],
+        correct: "C",
+        explanation: "Q.S. Al-Isra'/17: 27 secara tegas menyatakan bahwa \"Sesungguhnya para pemboros itu adalah saudara-saudara setan\"."
+      },
+      {
+        id: 40,
+        category: "Agama Islam – Al-Kulliyat Al-Khamsah",
+        stimulus: "Ketika terjadi benturan antar kelima prinsip, Islam mengajarkan skala prioritas.",
+        question: "Jika seseorang diancam akan disita seluruh hartanya (Hifz Al-Mal) kecuali ia bersedia murtad menyekutukan Allah (Hifz Ad-Din), prinsip mana yang harus didahulukan?",
+        options: [
+          { key: "A", text: "Menjaga harta (Hifz Al-Mal), karena harta sulit dicari." },
+          { key: "B", text: "Keduanya setara, sehingga diserahkan pada kehendak pribadi." },
+          { key: "C", text: "Menjaga agama (Hifz Ad-Din) karena itu merupakan prioritas utama di atas yang lainnya." },
+          { key: "D", text: "Mengorbankan agama terlebih dahulu demi menyelamatkan harta agar kelak harta tersebut bisa disumbangkan kembali ke panti asuhan atau yayasan amal." },
+          { key: "E", text: "Melarikan diri tanpa harta." }
+        ],
+        correct: "C",
+        explanation: "Implementasi secara keseluruhan harus mendahulukan sesuai urutannya. Menjaga agama (Hifz Ad-Din) menjadi prioritas utama daripada yang lainnya (jiwa, akal, keturunan, harta)."
+      }
+    ];
+
+    // --- STATE VARIABLES ---
+    let currentQIndex = 0;
+    let score = 0;
+    let selectedAnswer = null;
+    let isAnswered = false;
+
+    // --- DOM ELEMENTS ---
+    const screens = {
+      start: document.getElementById('screen-start'),
+      quiz: document.getElementById('screen-quiz'),
+      result: document.getElementById('screen-result')
+    };
+
+    const elCategory = document.getElementById('quiz-category');
+    const elProgressText = document.getElementById('quiz-progress-text');
+    const elProgressBar = document.getElementById('quiz-progress-bar');
+    const elStimulusContainer = document.getElementById('stimulus-container');
+    const elStimulus = document.getElementById('quiz-stimulus');
+    const elQuestion = document.getElementById('quiz-question');
+    const elOptions = document.getElementById('quiz-options');
+    const elFeedbackContainer = document.getElementById('quiz-feedback-container');
+    const elFeedbackBox = document.getElementById('quiz-feedback-box');
+    const elFeedbackIcon = document.getElementById('quiz-feedback-icon');
+    const elFeedbackTitle = document.getElementById('quiz-feedback-title');
+    const elFeedbackText = document.getElementById('quiz-feedback-text');
+    const elNextBtn = document.getElementById('quiz-next-btn');
+
+    const elResultScore = document.getElementById('result-score');
+    const elResultCorrect = document.getElementById('result-correct');
+    const elResultTotal = document.getElementById('result-total');
+    const elResultMessage = document.getElementById('result-message');
+    const elResultCircle = document.getElementById('result-circle');
+
+    // --- FUNCTIONS ---
+    function showScreen(screenName) {
+      Object.values(screens).forEach(s => s.classList.add('hidden'));
+      screens[screenName].classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }
+
+    function startQuiz() {
+      currentQIndex = 0;
+      score = 0;
+      selectedAnswer = null;
+      isAnswered = false;
+      showScreen('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questionsData[currentQIndex];
+      const progressPercent = ((currentQIndex + 1) / questionsData.length) * 100;
+
+      elCategory.textContent = q.category;
+      elProgressText.textContent = `Soal ${currentQIndex + 1} / ${questionsData.length}`;
+      elProgressBar.style.width = `${progressPercent}%`;
+
+      if (q.stimulus && q.stimulus.trim() !== "") {
+        elStimulusContainer.classList.remove('hidden');
+        elStimulus.textContent = q.stimulus;
+      } else {
+        elStimulusContainer.classList.add('hidden');
+      }
+
+      elQuestion.textContent = q.question;
+
+      elNextBtn.innerHTML = currentQIndex === questionsData.length - 1
+        ? `Selesaikan Latihan <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`
+        : `Soal Berikutnya <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`;
+
+      renderOptions();
+      elFeedbackContainer.classList.add('hidden');
+    }
+
+    function renderOptions() {
+      const q = questionsData[currentQIndex];
+      elOptions.innerHTML = '';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+
+        let btnClass = "w-full text-left p-4 rounded-xl border border-slate-600 bg-slate-700/40 hover:bg-slate-600/60 transition duration-200 flex items-start gap-4";
+        let letterClass = "flex-shrink-0 w-8 h-8 rounded-full bg-slate-600 text-white flex items-center justify-center font-bold text-sm";
+
+        if (!isAnswered) {
+          btn.style.cursor = "pointer";
+          btn.onclick = () => selectOption(opt.key);
+        } else {
+          btn.disabled = true;
+          btnClass = "w-full text-left p-4 rounded-xl border flex items-start gap-4 opacity-60";
+
+          if (opt.key === q.correct) {
+            btnClass = "w-full text-left p-4 rounded-xl border border-emerald-500 bg-emerald-900/40 flex items-start gap-4";
+            letterClass = "flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm";
+          } else if (opt.key === selectedAnswer && selectedAnswer !== q.correct) {
+            btnClass = "w-full text-left p-4 rounded-xl border border-rose-500 bg-rose-900/40 flex items-start gap-4";
+            letterClass = "flex-shrink-0 w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center font-bold text-sm";
+          }
+        }
+
+        btn.className = btnClass;
+        btn.innerHTML = `
+          <span class="${letterClass}">${opt.key}</span>
+          <span class="pt-1 text-slate-200">${opt.text}</span>
+        `;
+        elOptions.appendChild(btn);
+      });
+    }
+
+    function selectOption(key) {
+      if (isAnswered) return;
+      isAnswered = true;
+      selectedAnswer = key;
+
+      const q = questionsData[currentQIndex];
+      const isCorrect = (key === q.correct);
+
+      if (isCorrect) score++;
+
+      renderOptions();
+      showFeedback(isCorrect, q.explanation);
+    }
+
+    function showFeedback(isCorrect, explanation) {
+      elFeedbackContainer.classList.remove('hidden');
+
+      if (isCorrect) {
+        elFeedbackBox.className = "p-6 rounded-2xl border bg-emerald-900/30 border-emerald-500/50 text-emerald-100 mb-6";
+        elFeedbackIcon.innerHTML = `<svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+        elFeedbackTitle.textContent = "Jawaban Kamu Tepat!";
+      } else {
+        elFeedbackBox.className = "p-6 rounded-2xl border bg-rose-900/30 border-rose-500/50 text-rose-100 mb-6";
+        elFeedbackIcon.innerHTML = `<svg class="w-7 h-7 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+        elFeedbackTitle.textContent = "Jawaban Kamu Kurang Tepat";
+      }
+
+      elFeedbackText.innerHTML = `<strong class="font-semibold">Pembahasan:</strong> ${explanation}`;
+    }
+
+    function handleNextQuestion() {
+      if (currentQIndex < questionsData.length - 1) {
+        currentQIndex++;
+        selectedAnswer = null;
+        isAnswered = false;
+        renderQuestion();
+      } else {
+        showResultScreen();
+      }
+    }
+
+    function showResultScreen() {
+      const total = questionsData.length;
+      const finalScore = Math.round((score / total) * 100);
+
+      elResultScore.textContent = finalScore;
+      elResultCorrect.textContent = score;
+      elResultTotal.textContent = total;
+
+      elResultCircle.setAttribute('stroke-dasharray', `${finalScore}, 100`);
+
+      if (finalScore >= 80) {
+        elResultMessage.textContent = "Luar biasa! Pemahaman Agama Islam-mu sangat mantap. Terus tingkatkan!";
+      } else if (finalScore >= 60) {
+        elResultMessage.textContent = "Kerja bagus! Sedikit lagi menguasai materi ini. Yuk perkuat lagi pemahamanmu!";
+      } else {
+        elResultMessage.textContent = "Terus semangat belajar! Yuk pelajari lagi materi Agama Islam dari awal.";
+      }
+
+      showScreen('result');
+    }
+
+    function goHome() {
+      showScreen('start');
+    }
+  </script>
+</body>
+</html>
